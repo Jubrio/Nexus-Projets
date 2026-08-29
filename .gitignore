@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Env files
+.env
+.env.local
+
+# Laravel
+backend/storage/*.key
+backend/bootstrap/cache/*
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
