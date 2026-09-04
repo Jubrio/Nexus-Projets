@@ -36,12 +36,25 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
 
-        if (! Auth::attempt($credentials, true)) {
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Les identifiants fournis sont incorrects.'],
             ]);
         }
 
+        // Si le 2FA est activé, on ne connecte PAS l'utilisateur directement.
+        // On demande le code TOTP via une étape supplémentaire (/auth/2fa/verify).
+        if ($user->hasTwoFactorEnabled()) {
+            return response()->json([
+                'message' => 'Code de vérification à deux facteurs requis.',
+                'requires_2fa' => true,
+                'email' => $user->email,
+            ]);
+        }
+
+        Auth::login($user, true);
         $request->session()->regenerate();
 
         return response()->json([
