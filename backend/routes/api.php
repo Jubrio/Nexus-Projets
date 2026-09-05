@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\InvitationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\Api\TwoFactorController;
 use App\Models\User;
@@ -79,6 +80,12 @@ Route::prefix('v1')->group(function () {
         return response()->json(['message' => 'Ce lien de réinitialisation est invalide ou expiré.'], 422);
     })->middleware('throttle:3,1');
 
+    // Invitations — routes publiques (pas encore de compte pour la personne invitée)
+    Route::middleware('throttle:10,1')->group(function () {
+        Route::get('/invitations/{token}', [InvitationController::class, 'show']);
+        Route::post('/invitations/{token}/accept', [InvitationController::class, 'accept']);
+    });
+
     // Routes protégées (authentification requise)
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -107,6 +114,8 @@ Route::prefix('v1')->group(function () {
             Route::get('/users', [OrganizationController::class, 'users']);
             Route::get('/roles', [OrganizationController::class, 'roles']);
             Route::put('/users/{user}/role', [OrganizationController::class, 'updateUserRole']);
+            Route::post('/invitations', [InvitationController::class, 'store'])
+                ->middleware('throttle:5,1');
         });
     });
 
