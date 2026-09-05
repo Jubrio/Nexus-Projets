@@ -20,7 +20,13 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<LoginResult>;
   verifyTwoFactor: (email: string, code: string) => Promise<void>;
-  register: (name: string, email: string, password: string, passwordConfirmation: string) => Promise<void>;
+  register: (
+    organizationName: string,
+    name: string,
+    email: string,
+    password: string,
+    passwordConfirmation: string
+  ) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
@@ -72,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (
+    organizationName: string,
     name: string,
     email: string,
     password: string,
@@ -80,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await getCsrfCookie();
 
     await api.post('/auth/register', {
+      organization_name: organizationName,
       name,
       email,
       password,

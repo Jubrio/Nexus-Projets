@@ -11,6 +11,7 @@ import { AxiosError } from 'axios';
 
 const registerSchema = z
   .object({
+    organizationName: z.string().min(2, "Le nom de l'organisation doit contenir au moins 2 caractères"),
     name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
     email: z.string().email('Email invalide'),
     password: z
@@ -48,7 +49,13 @@ export default function RegisterPage() {
     setIsSubmitting(true);
 
     try {
-      await registerUser(data.name, data.email, data.password, data.passwordConfirmation);
+      await registerUser(
+        data.organizationName,
+        data.name,
+        data.email,
+        data.password,
+        data.passwordConfirmation
+      );
       router.push('/login?registered=true');
     } catch (err) {
       if (err instanceof AxiosError && err.response?.data?.message) {
@@ -75,8 +82,24 @@ export default function RegisterPage() {
           )}
 
           <div>
+            <label htmlFor="organizationName" className="block text-sm font-medium text-gray-700">
+              Nom de l&apos;organisation
+            </label>
+            <input
+              id="organizationName"
+              type="text"
+              placeholder="Acme Corp"
+              {...register('organizationName')}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+            />
+            {errors.organizationName && (
+              <p className="mt-1 text-sm text-red-600">{errors.organizationName.message}</p>
+            )}
+          </div>
+
+          <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Nom complet
+              Votre nom complet
             </label>
             <input
               id="name"

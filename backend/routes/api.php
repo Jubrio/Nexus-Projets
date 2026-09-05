@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\Api\TwoFactorController;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
@@ -100,7 +101,13 @@ Route::prefix('v1')->group(function () {
             Route::post('/confirm', [TwoFactorController::class, 'confirm']);
             Route::post('/disable', [TwoFactorController::class, 'disable']);
         });
+
+        // Gestion de l'organisation — membres et rôles
+        Route::prefix('organization')->group(function () {
+            Route::get('/users', [OrganizationController::class, 'users']);
+            Route::get('/roles', [OrganizationController::class, 'roles']);
+            Route::put('/users/{user}/role', [OrganizationController::class, 'updateUserRole']);
+        });
     });
 
 });
-
