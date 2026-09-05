@@ -3,6 +3,9 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InvitationController;
 use App\Http\Controllers\Api\OrganizationController;
+use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\TaskCommentController;
+use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\TwoFactorController;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
@@ -117,6 +120,18 @@ Route::prefix('v1')->group(function () {
             Route::post('/invitations', [InvitationController::class, 'store'])
                 ->middleware('throttle:5,1');
         });
+
+        // Projets, tâches et commentaires
+        Route::apiResource('projects', ProjectController::class);
+        Route::post('/projects/{project}/members', [ProjectController::class, 'addMember']);
+
+        Route::get('/projects/{project}/tasks', [TaskController::class, 'index']);
+        Route::post('/projects/{project}/tasks', [TaskController::class, 'store']);
+        Route::put('/projects/{project}/tasks/{task}', [TaskController::class, 'update']);
+        Route::delete('/projects/{project}/tasks/{task}', [TaskController::class, 'destroy']);
+
+        Route::get('/tasks/{task}/comments', [TaskCommentController::class, 'index']);
+        Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store']);
     });
 
 });
