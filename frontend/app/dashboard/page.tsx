@@ -2,7 +2,9 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import NotificationBell from '@/components/NotificationBell';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -36,12 +38,15 @@ export default function DashboardPage() {
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <h1 className="text-xl font-bold text-gray-900">NEXUS</h1>
-          <button
-            onClick={handleLogout}
-            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            Se déconnecter
-          </button>
+          <div className="flex items-center gap-3">
+            <NotificationBell />
+            <button
+              onClick={handleLogout}
+              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Se déconnecter
+            </button>
+          </div>
         </div>
       </header>
 
@@ -60,6 +65,30 @@ export default function DashboardPage() {
               </dd>
             </div>
           </dl>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <Link
+            href="/projects"
+            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
+          >
+            <h3 className="font-semibold text-gray-900">Projets</h3>
+            <p className="mt-1 text-sm text-gray-500">Gérer vos projets et tâches</p>
+          </Link>
+          <Link
+            href="/tickets"
+            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
+          >
+            <h3 className="font-semibold text-gray-900">Tickets</h3>
+            <p className="mt-1 text-sm text-gray-500">Support et suivi des demandes</p>
+          </Link>
+          <Link
+            href="/settings/team"
+            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
+          >
+            <h3 className="font-semibold text-gray-900">Équipe</h3>
+            <p className="mt-1 text-sm text-gray-500">Gérer les membres et rôles</p>
+          </Link>
         </div>
       </main>
     </div>

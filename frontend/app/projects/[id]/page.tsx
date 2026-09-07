@@ -23,6 +23,12 @@ const COLUMNS: { key: keyof TasksByStatus; label: string }[] = [
   { key: 'done', label: 'Terminé' },
 ];
 
+const PRIORITY_LABELS: Record<string, string> = {
+  low: 'Basse',
+  medium: 'Moyenne',
+  high: 'Haute',
+};
+
 const PRIORITY_COLORS: Record<string, string> = {
   low: 'bg-gray-100 text-gray-700',
   medium: 'bg-yellow-100 text-yellow-700',
@@ -190,7 +196,7 @@ export default function ProjectKanbanPage() {
                       <span
                         className={`rounded px-2 py-0.5 text-xs ${PRIORITY_COLORS[task.priority]}`}
                       >
-                        {task.priority}
+                        {PRIORITY_LABELS[task.priority]}
                       </span>
                       {task.assignee && (
                         <span className="text-xs text-gray-400">{task.assignee.name}</span>
