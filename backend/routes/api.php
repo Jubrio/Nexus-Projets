@@ -2,10 +2,13 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InvitationController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\TaskCommentController;
 use App\Http\Controllers\Api\TaskController;
+use App\Http\Controllers\Api\TicketCommentController;
+use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TwoFactorController;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
@@ -132,6 +135,18 @@ Route::prefix('v1')->group(function () {
 
         Route::get('/tasks/{task}/comments', [TaskCommentController::class, 'index']);
         Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store']);
+
+        // Tickets et commentaires
+        Route::apiResource('tickets', TicketController::class);
+        Route::get('/tickets/{ticket}/comments', [TicketCommentController::class, 'index']);
+        Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store']);
+
+        // Notifications
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', [NotificationController::class, 'index']);
+            Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+            Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
+        });
     });
 
 });
