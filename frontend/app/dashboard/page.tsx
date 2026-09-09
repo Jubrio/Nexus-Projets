@@ -52,7 +52,7 @@ export default function DashboardPage() {
 
       <main className="mx-auto max-w-6xl px-4 py-8">
         <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="text-lg font-semibold text-gray-900">Bienvenue, {user.name} 👋</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Bienvenue, {user.name}</h2>
           <dl className="mt-4 space-y-2 text-sm text-gray-600">
             <div>
               <dt className="inline font-medium text-gray-900">Email : </dt>
@@ -61,13 +61,13 @@ export default function DashboardPage() {
             <div>
               <dt className="inline font-medium text-gray-900">Email vérifié : </dt>
               <dd className="inline">
-                {user.email_verified_at ? '✅ Oui' : '⚠️ Non — vérifiez votre boîte mail'}
+                {user.email_verified_at ? 'Oui' : 'Non — vérifiez votre boîte mail'}
               </dd>
             </div>
           </dl>
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link
             href="/projects"
             className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
@@ -75,6 +75,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-gray-900">Projets</h3>
             <p className="mt-1 text-sm text-gray-500">Gérer vos projets et tâches</p>
           </Link>
+
           <Link
             href="/tickets"
             className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
@@ -82,6 +83,15 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-gray-900">Tickets</h3>
             <p className="mt-1 text-sm text-gray-500">Support et suivi des demandes</p>
           </Link>
+
+          <Link
+            href="/inventory/products"
+            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
+          >
+            <h3 className="font-semibold text-gray-900">Inventaire</h3>
+            <p className="mt-1 text-sm text-gray-500">Produits, fournisseurs et entrepôts</p>
+          </Link>
+
           <Link
             href="/settings/team"
             className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"

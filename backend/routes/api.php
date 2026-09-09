@@ -4,12 +4,16 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InvitationController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\StockMovementController;
+use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\TaskCommentController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\TicketCommentController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TwoFactorController;
+use App\Http\Controllers\Api\WarehouseController;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -147,6 +151,16 @@ Route::prefix('v1')->group(function () {
             Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
             Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
         });
+
+        // Inventaire : fournisseurs, entrepôts, produits, mouvements de stock
+        Route::apiResource('suppliers', SupplierController::class)->except('show');
+        Route::apiResource('warehouses', WarehouseController::class)->except('show');
+        Route::apiResource('products', ProductController::class);
+    Route::get('/products/{product}/movements/export', [StockMovementController::class, 'export']);
+    Route::get('/products/{product}/qrcode', [ProductController::class, 'qrCode']);
+
+        Route::get('/products/{product}/movements', [StockMovementController::class, 'index']);
+        Route::post('/products/{product}/movements', [StockMovementController::class, 'store']);
     });
 
 });
