@@ -93,6 +93,14 @@ export default function DashboardPage() {
           </Link>
 
           <Link
+            href="/invoicing/clients"
+            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
+          >
+            <h3 className="font-semibold text-gray-900">Facturation</h3>
+            <p className="mt-1 text-sm text-gray-500">Clients, factures et paiements</p>
+          </Link>
+
+          <Link
             href="/settings/team"
             className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
           >
