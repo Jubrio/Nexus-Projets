@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\InvitationController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\StockMovementController;
@@ -37,26 +40,20 @@ Route::prefix('v1')->group(function () {
     // Vérification d'email — lien signé, sécurisé contre la falsification
     Route::get('/auth/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
         $user = User::findOrFail($id);
-
         if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
             return response()->json(['message' => 'Lien de vérification invalide.'], 403);
         }
-
         if ($user->hasVerifiedEmail()) {
             return response()->json(['message' => 'Email déjà vérifié.']);
         }
-
         $user->markEmailAsVerified();
-
         return response()->json(['message' => 'Email vérifié avec succès.']);
     })->middleware(['signed'])->name('verification.verify');
 
     // Mot de passe oublié — envoie un email avec un lien de réinitialisation
     Route::post('/auth/forgot-password', function (Request $request) {
         $validated = $request->validate(['email' => 'required|email']);
-
         Password::sendResetLink($validated);
-
         return response()->json([
             'message' => 'Si cet email existe, un lien de réinitialisation a été envoyé.',
         ]);
@@ -69,24 +66,19 @@ Route::prefix('v1')->group(function () {
             'email' => 'required|email',
             'password' => 'required|confirmed|min:8',
         ]);
-
         $status = Password::reset(
             $validated,
             function (User $user, string $password) {
                 $user->forceFill([
                     'password' => Hash::make($password),
                 ])->setRememberToken(Str::random(60));
-
                 $user->save();
-
                 event(new PasswordReset($user));
             }
         );
-
         if ($status === Password::PASSWORD_RESET) {
             return response()->json(['message' => 'Mot de passe réinitialisé avec succès.']);
         }
-
         return response()->json(['message' => 'Ce lien de réinitialisation est invalide ou expiré.'], 422);
     })->middleware('throttle:3,1');
 
@@ -98,6 +90,7 @@ Route::prefix('v1')->group(function () {
 
     // Routes protégées (authentification requise)
     Route::middleware('auth:sanctum')->group(function () {
+
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('/auth/user', [AuthController::class, 'user']);
 
@@ -106,9 +99,7 @@ Route::prefix('v1')->group(function () {
             if ($request->user()->hasVerifiedEmail()) {
                 return response()->json(['message' => 'Email déjà vérifié.']);
             }
-
             $request->user()->sendEmailVerificationNotification();
-
             return response()->json(['message' => 'Email de vérification renvoyé.']);
         })->middleware('throttle:3,1');
 
@@ -131,12 +122,10 @@ Route::prefix('v1')->group(function () {
         // Projets, tâches et commentaires
         Route::apiResource('projects', ProjectController::class);
         Route::post('/projects/{project}/members', [ProjectController::class, 'addMember']);
-
         Route::get('/projects/{project}/tasks', [TaskController::class, 'index']);
         Route::post('/projects/{project}/tasks', [TaskController::class, 'store']);
         Route::put('/projects/{project}/tasks/{task}', [TaskController::class, 'update']);
         Route::delete('/projects/{project}/tasks/{task}', [TaskController::class, 'destroy']);
-
         Route::get('/tasks/{task}/comments', [TaskCommentController::class, 'index']);
         Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store']);
 
@@ -156,11 +145,14 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('suppliers', SupplierController::class)->except('show');
         Route::apiResource('warehouses', WarehouseController::class)->except('show');
         Route::apiResource('products', ProductController::class);
-    Route::get('/products/{product}/movements/export', [StockMovementController::class, 'export']);
-    Route::get('/products/{product}/qrcode', [ProductController::class, 'qrCode']);
-
         Route::get('/products/{product}/movements', [StockMovementController::class, 'index']);
         Route::post('/products/{product}/movements', [StockMovementController::class, 'store']);
-    });
+        Route::get('/products/{product}/movements/export', [StockMovementController::class, 'export']);
+        Route::get('/products/{product}/qrcode', [ProductController::class, 'qrCode']);
 
+        // Clients, factures, paiements
+        Route::apiResource('clients', ClientController::class);
+        Route::apiResource('invoices', InvoiceController::class);
+        Route::apiResource('payments', PaymentController::class);
+    });
 });
