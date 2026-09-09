@@ -17,6 +17,9 @@ use App\Http\Controllers\Api\TicketCommentController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TwoFactorController;
 use App\Http\Controllers\Api\WarehouseController;
+use App\Http\Controllers\Api\DocumentController;
+use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\SearchController;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -154,5 +157,12 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('clients', ClientController::class);
         Route::apiResource('invoices', InvoiceController::class);
         Route::apiResource('payments', PaymentController::class);
+        // Documents
+        Route::apiResource('documents', DocumentController::class)->except('update');
+        Route::get('/documents/{document}/download', [DocumentController::class, 'download']);
+        Route::get('/audit-logs', [AuditLogController::class, 'index']);
+        Route::get('/audit-logs/{auditLog}', [AuditLogController::class, 'show']);
+        Route::get('/search', [SearchController::class, 'index']);
     });
 });
+    // Documents

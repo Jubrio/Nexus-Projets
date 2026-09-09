@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import NotificationBell from '@/components/NotificationBell';
+import SearchBar from '@/components/SearchBar';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -38,7 +39,8 @@ export default function DashboardPage() {
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <h1 className="text-xl font-bold text-gray-900">NEXUS</h1>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <SearchBar />
             <NotificationBell />
             <button
               onClick={handleLogout}
@@ -68,44 +70,34 @@ export default function DashboardPage() {
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Link
-            href="/projects"
-            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
-          >
+          <Link href="/projects" className="rounded-lg bg-white p-6 shadow transition hover:shadow-md">
             <h3 className="font-semibold text-gray-900">Projets</h3>
             <p className="mt-1 text-sm text-gray-500">Gérer vos projets et tâches</p>
           </Link>
 
-          <Link
-            href="/tickets"
-            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
-          >
+          <Link href="/tickets" className="rounded-lg bg-white p-6 shadow transition hover:shadow-md">
             <h3 className="font-semibold text-gray-900">Tickets</h3>
             <p className="mt-1 text-sm text-gray-500">Support et suivi des demandes</p>
           </Link>
 
-          <Link
-            href="/inventory/products"
-            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
-          >
+          <Link href="/inventory/products" className="rounded-lg bg-white p-6 shadow transition hover:shadow-md">
             <h3 className="font-semibold text-gray-900">Inventaire</h3>
             <p className="mt-1 text-sm text-gray-500">Produits, fournisseurs et entrepôts</p>
           </Link>
 
-          <Link
-            href="/invoicing/clients"
-            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
-          >
+          <Link href="/invoicing/clients" className="rounded-lg bg-white p-6 shadow transition hover:shadow-md">
             <h3 className="font-semibold text-gray-900">Facturation</h3>
             <p className="mt-1 text-sm text-gray-500">Clients, factures et paiements</p>
           </Link>
 
-          <Link
-            href="/settings/team"
-            className="rounded-lg bg-white p-6 shadow transition hover:shadow-md"
-          >
+          <Link href="/settings/team" className="rounded-lg bg-white p-6 shadow transition hover:shadow-md">
             <h3 className="font-semibold text-gray-900">Équipe</h3>
             <p className="mt-1 text-sm text-gray-500">Gérer les membres et rôles</p>
+          </Link>
+
+          <Link href="/audit-logs" className="rounded-lg bg-white p-6 shadow transition hover:shadow-md">
+            <h3 className="font-semibold text-gray-900">Audit</h3>
+            <p className="mt-1 text-sm text-gray-500">Consulter les logs d&apos;activité</p>
           </Link>
         </div>
       </main>
