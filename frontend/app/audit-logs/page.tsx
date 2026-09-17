@@ -32,7 +32,7 @@ export default function AuditLogsPage() {
         getMembers(),
       ]);
       // Si l'API retourne une structure paginée, extraire les données
-      const logsArray = Array.isArray(logsData) ? logsData : logsData.data || [];
+      const logsArray = Array.isArray(logsData) ? logsData : ((logsData as { data?: import('@/lib/audit').AuditLog[] })?.data ?? []);
       setLogs(logsArray);
       setMembers(membersData);
     } catch {

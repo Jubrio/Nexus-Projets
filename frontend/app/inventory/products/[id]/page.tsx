@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import {
   getProduct,
+  getProductQrCodeUrl,
   getProductMovements,
   createStockMovement,
   getWarehouses,
@@ -13,7 +14,7 @@ import {
   StockMovement,
   Warehouse,
 } from '@/lib/inventory';
-import { ArrowLeft, Package, Warehouse as WarehouseIcon, User, Calendar, AlertTriangle, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Package, Warehouse as WarehouseIcon, User, Calendar, AlertTriangle, CheckCircle, QrCode, X } from 'lucide-react';
 
 const TYPE_LABELS: Record<string, string> = {
   in: 'Entrée',
@@ -31,6 +32,16 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const params = useParams();
   const productId = Number(params.id);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+  const [showQrModal, setShowQrModal] = useState(false);
+
+  const handleShowQrCode = async () => {
+    if (!qrCodeUrl) {
+      const url = await getProductQrCodeUrl(productId);
+      setQrCodeUrl(url);
+    }
+    setShowQrModal(true);
+  };
   const { user, isLoading: authLoading } = useAuth();
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -153,13 +164,13 @@ export default function ProductDetailPage() {
                   <h2 className="text-2xl font-bold text-gray-900">{product.name}</h2>
                 {product.sku && <p className="text-sm text-gray-500">SKU : {product.sku}</p>}
                 <div className="mt-2 flex gap-2">
-                  <a
-                    href={`${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1$/, "") || "http://localhost:8000"}/api/v1/products/${productId}/qrcode`}
-                    target="_blank"
-                    className="inline-block rounded-md border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-50"
+                  <button
+                    onClick={handleShowQrCode}
+                    className="inline-flex items-center gap-1 rounded-md border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-50"
                   >
+                    <QrCode size={14} />
                     QR Code
-                  </a>
+                  </button>
                 </div>
                   {product.sku && <p className="text-sm text-gray-500">SKU : {product.sku}</p>}
                 </div>
@@ -356,6 +367,35 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </main>
+
+      {showQrModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setShowQrModal(false)}
+        >
+          <div
+            className="relative rounded-lg bg-white p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowQrModal(false)}
+              className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+              aria-label="Fermer"
+            >
+              <X size={20} />
+            </button>
+            <h3 className="mb-4 text-center text-sm font-medium text-gray-700">
+              QR Code — {product?.name}
+            </h3>
+            {qrCodeUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={qrCodeUrl} alt={`QR code de ${product?.name}`} className="mx-auto" />
+            ) : (
+              <p className="py-8 text-center text-sm text-gray-400">Chargement...</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -128,3 +128,10 @@ export async function createStockMovement(productId: number, data: {
   const response = await api.post(`/products/${productId}/movements`, data);
   return response.data;
 }
+
+export async function getProductQrCodeUrl(id: number): Promise<string> {
+  const response = await api.get(`/products/${id}/qrcode`, {
+    responseType: 'blob',
+  });
+  return URL.createObjectURL(response.data);
+}

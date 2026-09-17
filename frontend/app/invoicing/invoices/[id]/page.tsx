@@ -58,7 +58,7 @@ export default function InvoiceDetailPage() {
 
   const handleStatusChange = async (status: string) => {
     try {
-      await updateInvoice(invoiceId, { status });
+      await updateInvoice(invoiceId, { status: status as 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled' });
       await loadInvoice();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Erreur');

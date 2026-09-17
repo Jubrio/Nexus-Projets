@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Supplier;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use chillerlan\QRCode\Output\QRGdImagePNG;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -106,11 +107,10 @@ class ProductController extends Controller
         ]);
 
         $options = new QROptions([
-            'version' => 5,
-            'outputType' => 'png',
+            'outputInterface' => QRGdImagePNG::class,
+            'outputBase64' => false,
             'eccLevel' => 1,
             'scale' => 10,
-            'imageBase64' => false,
         ]);
 
         $qrCode = new QRCode($options);
