@@ -106,7 +106,14 @@ class StockMovementController extends Controller
         $callback = function () use ($movements) {
             $handle = fopen('php://output', 'w');
 
-            fputcsv($handle, ['Date', 'Type', 'Quantite', 'Entrepot', 'Motif', 'Cree par']);
+            // BOM UTF-8 : indispensable pour qu'Excel affiche correctement
+            // les accents (sans lui, il devine souvent le mauvais encodage)
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            // Point-virgule : séparateur par défaut d'Excel en configuration
+            // régionale française/internationale (la virgule sert de séparateur
+            // décimal dans ces locales, donc Excel n'utilise pas la virgule pour les CSV)
+            fputcsv($handle, ['Date', 'Type', 'Quantite', 'Entrepot', 'Motif', 'Cree par'], ';');
 
             $typeLabels = [
                 'in' => 'Entree',
@@ -122,7 +129,7 @@ class StockMovementController extends Controller
                     $movement->warehouse->name,
                     $movement->reason ?? '',
                     $movement->creator->name,
-                ]);
+                ], ';');
             }
 
             fclose($handle);
