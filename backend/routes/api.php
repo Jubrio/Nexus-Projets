@@ -163,6 +163,6 @@ Route::prefix('v1')->group(function () {
         Route::get('/audit-logs', [AuditLogController::class, 'index']);
         Route::get('/audit-logs/{auditLog}', [AuditLogController::class, 'show']);
         Route::get('/search', [SearchController::class, 'index']);
+        Route::get('/dashboard/summary', [\App\Http\Controllers\Api\DashboardController::class, 'summary']);
     });
 });
-    // Documents
